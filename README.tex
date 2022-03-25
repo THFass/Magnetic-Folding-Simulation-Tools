@@ -1,0 +1,215 @@
+# Magnetic-Folding-Simulation-Tools
+Python software package to simulate magnetic chains
+
+
+\section{Software Documentation}
+\label{ap:soft_doku}
+A software package was developed that allows for the creation, manipulation and analysis of magnetic folding chains. The software was implemented in Python V3.8 0has the dependencies
+\begin{itemize}
+    \item \textit{numpy} V1.18.4
+    \item \textit{cupy} v10.1
+    \item \textit{trimesh} v3.9.29
+    \item \textit{scypy} v1.4.1
+    \item \textit{matplotlib} v3.2.1
+    \item \textit{tkinter} v3.8
+\end{itemize}
+The following libraries have been implemented
+\subsubsection{Chain\textunderscore data\textunderscore struct:} 
+Contains the Chain object that builds the the data structure for magnetic folding chains. It dependents on Component\textunderscore data\textunderscore struct, Function\textunderscore lib and Coord\textunderscore data\textunderscore struct. Primary methods of the \textit{CHain} object are:
+\begin{itemize}
+    \item \textit{calc\textunderscore energy} calculates internal energy for current state
+    \item \textit{calc\textunderscore force} calculates internal forces for current state
+    \item \textit{calc\textunderscore torque} calculates internal torques for current state
+    \item \textit{set_mag} sets the magnetic orientation of all components
+    \item \textit{plot} plots the chain using \textit{matplot} library
+    \item \textit{append} appends a component to the chain
+    \item \textit{remove} removes a component from the chain
+    \item \textit{from\textunderscore types} creates the chain from predefined archetypes
+    \item \textit{simulate} simulates the dynamics of the chain
+    \item \textit{is\textunderscore colliding} calculates is components are colliding in the current state
+    \item \textit{update\textunderscore lists} mandatory step to synchronise component positions
+    \item \textit{get\textunderscore centres} returns absolute position of all components
+    \item \textit{get\textunderscore angles} returns relative angles between components
+    \item \textit{get\textunderscore state} returns state of chain
+    \item \textit{set\textunderscore angles} sets all joints in the chain to specific relative angles
+    \item \textit{set\textunderscore anglex} sets the relative angle for a specific joint
+    \item \textit{set\textunderscore state} sets the state of the chain
+\end{itemize}
+\subsubsection{Component\textunderscore data\textunderscore struct:} 
+Contains the \textit{Component} object, that handles all functionality for a singular component. Provides archetypes for the standardised cubic component defined in Section \ref{sec:app:buildingblocks}. It dependents on Magnet\textunderscore data\textunderscore struct, Coord\textunderscore data\textunderscore struct, Shape\textunderscore data\textunderscore struct and Function\textunderscore lib. Primary methods of the \textit{Component} object are:
+\begin{itemize}
+    \item \textit{update\textunderscore pos} updates absolute position in chain
+    \item \textit{plot} plots specific component
+    \item \textit{make\textunderscore next} creates new component similar to this one
+    \item \textit{get\textunderscore Q} return absolute rotation matrix of the component
+    \item \textit{get\textunderscore charge} returns absolute position and magnitude of all point charges associated with the component
+    \item \textit{get\textunderscore centre} returns absolute position of component
+    \item \textit{set\textunderscore mag} sets magnetisation of the component
+    \item \textit{set\textunderscore angle} sets joint corresponding to component
+\end{itemize}
+Library provides basic magnet shape archetypes, that inherit from the \textit{Component} object:
+\begin{itemize}
+    \item \textit{ACube} Cube archetype "A" as defined in Section \ref{sec:app:buildingblocks}
+    \item \textit{BCube} Cube archetype "B" as defined in Section \ref{sec:app:buildingblocks}
+    \item \textit{CCube} Cube archetype "C" as defined in Section \ref{sec:app:buildingblocks}
+    \item \textit{DCube} Cube archetype "D" as defined in Section \ref{sec:app:buildingblocks}
+\end{itemize}
+
+\subsubsection{Magnet\textunderscore data\textunderscore struct:} This library contains the Magnet Object that provides functionality for magnet simulation. It dependents on Coord\textunderscore data\textunderscore struct and Shape\textunderscore data\textunderscore struct. Primary methods of the \textit{Magnet} object are:
+\begin{itemize}
+    \item {copy} creates copy of the the object
+    \item {get\textunderscore charge\textunderscore abs} returns absolute position and magnitude of all point charges associated with the magnet
+    \item {get\textunderscore charge\textunderscore rel} returns relative position and magnitude of all point charges associated with the magnet
+\end{itemize}
+Library provides basic magnet shape archetypes, that inherit from the \textit{Magnet} object:
+\begin{itemize}
+    \item \textit{MCube} Cube shaped magnet
+    \item \textit{MSphere} Sphere shaped magnet
+    \item \textit{MCylinder} Cylinder shaped magnet
+\end{itemize}
+\subsubsection{Coord\textunderscore data\textunderscore struct} 
+The library contains the \textit{RefFrame} Obejct that manages all coordinate transformations. Primary methods of the \textit{Component} object are:
+\begin{itemize}
+    \item \textit{abs} returns absolute position
+    \item \textit{rel} returns relative position
+    \item \textit{rotate} rotates by a specific transformation
+    \item \textit{rotate\textunderscore to} rotates to an absolute transformation
+    \item \textit{append} returns \textit{RefFrame object with this reference frame as origin}
+    \item \textit{get\textunderscore dcm} returns absolute rotation matrix
+    \item \textit{get\textunderscore abs\textunderscore axis} returns axis in absolute transformation
+\end{itemize}
+
+
+\subsubsection{Shape\textunderscore data\textunderscore struct} 
+This library includes the \textit{Shapes} object that provides a framework for geometric shapes. Basic shapes such as sphere, cylinder and cube are currently implemented. support for generic shape via point cloud definition provided.
+
+
+\subsubsection{Function\textunderscore lib} 
+Is a collection of utility functions. Includes functions for vector algebra, block matrices and piloting.
+
+\subsubsection{GUI}
+Provides an alpha for a graphical user interface to create, manipulate and analyse magnetic chains. Is dependent of Chain\textunderscore data structure.
+
+\subsection{Primary Method Documentation}
+The primary functions for a user to interface with the software via text commands are listed together with their input and output in the following;
+\subsubsection{Chain.create}
+Inputs:
+\begin{itemize}
+    \item \textit{sequence} is a list of component objects.
+    \item \textit{resolution} is an arbitrary value corresponding to the number of point charges per magnetic surface. Absolute quantity depends on shape of magnet. 
+    \item \textit{upper\textunderscore boundary} is a value for maximum angle between components. If not specified, set to $2\pi$.
+    \item \textit{lower\textunderscore boundary} is value for minimum angle between components. If not specified, set to 0.
+    \item \textit{fig} can contain a handle for a figure to plot into. If not specified or $0$ a new figure will be created for plotting. If not specified it is set to $2$.
+    \item \textit{dtype} defines the type of numerical values within the code. Can be used to increase computational speed at the cost of precision. If not specified, set to \textit{numpy.float32}.
+\end{itemize}
+Output:
+\begin{itemize}
+    \item \textit{Chain} object
+\end{itemize}
+Creates a chain object. Is the same as native \textit{Chain.\textunderscore \textunderscore init\textunderscore \textunderscore } method.
+
+\subsubsection{Chain.append}
+Inputs:
+\begin{itemize}
+    \item \textit{comp\textunderscore type} is an input specifying the the type of component to append to the chain. Valid inputs are component objects or strings from \{"A", "B", "C", "D"\}.
+    \item \textit{phi\textunderscore 0} specifies the initial angle of the component. If not specified it is set to $0$
+    \item \textit{resolution} is an arbitrary value corresponding to the number of point charges per magnetic surface. Absolute quantity depends on shape of magnet. If not specified it is set to $3$.
+    \item \textit{dtype} defines the type of numerical values within the code. Can be used to increase computational speed at the cost of precision. If not specified, set to \textit{numpy.float32}.
+\end{itemize}
+Output: None
+
+Appends a new object at the end of an exiting chain. Supports standard cube components as defined in Section \ref{sec:app:buildingblocks}.
+
+\subsubsection{Chain.set\textunderscore state}
+Input:
+\begin{itemize}
+    \item \textit{state} is a list of rotation matrices indicating the rotation of each component. Number of entries has to be at least number of components in the chain.
+\end{itemize}
+Output: None
+
+Sets all components to a specific absolute rotation given in \textit{state}. If given rotation can not be achieved a close approximation will be made.
+
+\subsubsection{Chain.set\textunderscore state}
+Input: None
+
+Output:
+\begin{itemize}
+    \item \textit{state} is a list of rotation matrices indicating the rotation of each component. Number of entries equals number of components in the chain.
+\end{itemize}
+
+Returns a list filled with the absolute rotation matrix for each component.
+
+\subsubsection{Chain.set\textunderscore angles}
+Input:
+\begin{itemize}
+    \item \textit{angles} is a list of relative angles for the chain to be set to. Length of list has to be equal or shorter than number of components.
+\end{itemize}
+Output: None
+
+Set all angles to a specific relative configuration.
+
+
+\subsubsection{Chain.set\textunderscore anglex}
+Input:
+\begin{itemize}
+    \item \textit{angle} is a relative angle for the specific joint to take.
+    \item \textit{index} specifies the joint that is supposed to be set.
+\end{itemize}
+Output: None
+
+Set a specific angle to a specific relative configuration.
+
+\subsubsection{Chain.get\textunderscore angles}
+Input: None
+
+Output:
+\begin{itemize}
+    \item \textit{angles} is a list of relative angles of the chain. Length of list is equal to number of components.
+\end{itemize}
+
+urns the current configuration of the chain as a list of all relative angles.
+
+\subsubsection{Chain.set\textunderscore mag}
+Input:
+\begin{itemize}
+    \item \textit{mag} is a list, tuple or numpy-array with three entries specifying the direction of magnetisation. magnitude of the vector corresponds to maximum surface charge $Br_{max}$.
+\end{itemize}
+Output: None
+
+Set the magnetic orientation of all components in accordance with their current orientation, resulting in all components being magnetised in direction of the input vector.
+
+\subsubsection{Chain.get\textunderscore mag}
+Input: None
+
+Output
+\begin{itemize}
+    \item \textit{mag}  list of numpy-arrays with three entries that indicate absolute orientation of the magnetic polarisation of all magnets in each component, for the current system state.
+\end{itemize}
+Output: None
+
+Returns a list of numpy-arrays with three entries that indicate absolute orientation of the magnetic polarisation of all magnets in each component, for the current system state.
+
+\subsubsection{Chain.get\textunderscore fen}
+Input: None
+
+Output:
+\begin{itemize}
+    \item \textit{energy} numerical value specifying the total potential energy in the system for the current system state in Joule.
+    \item \textit{force} is a list of numpy-arrays, specifying the force that acts on each components center of mass in  $[\unit{N}]$.
+    \item \textit{torque} is a list of numpy-arrays, specifying the torque that acts on each components center of mass in $[\unit{Nm}]$.
+\end{itemize}
+
+\subsubsection{Chain.plot}
+Input: 
+\begin{itemize}
+    \item \textit{plt\textunderscore hinges} is a boolean with true to plot hinges. If not specified it is set to True.
+    \item \textit{plt\textunderscore charge} is a boolean with true to lot the point charges. If not specified it is set to False.
+\end{itemize}
+
+Output:
+\begin{itemize}
+    \item \textit{Figure} returns the \textit{matplot} library handler for the figure
+\end{itemize}
+
+\subsubsection{GUIMain}
+Initiating this object will crate a rudimentary graphical user interface that allows for the creation, manipulation and analysis of magnetic chains.
